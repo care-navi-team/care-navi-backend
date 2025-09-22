@@ -80,7 +80,7 @@ export const submitSurveyResponse = async (req: Request, res: Response, next: Ne
       const answer = answers[i];
       const question = questions[i];
 
-      if (answer.questionId !== question._id.toString()) {
+      if (answer.questionId !== (question._id as any).toString()) {
         const error = new Error('문항 순서가 올바르지 않습니다') as AppError;
         error.statusCode = 400;
         return next(error);
@@ -97,7 +97,7 @@ export const submitSurveyResponse = async (req: Request, res: Response, next: Ne
       totalScore += score;
 
       processedAnswers.push({
-        questionId: question._id,
+        questionId: question._id as any,
         selectedOptionIndex: answer.selectedOptionIndex,
         score
       });
