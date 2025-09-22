@@ -168,6 +168,223 @@ const options = {
             }
           }
         },
+        Survey: {
+          type: 'object',
+          required: ['title', 'description', 'category'],
+          properties: {
+            _id: {
+              type: 'string',
+              description: '설문 ID'
+            },
+            title: {
+              type: 'string',
+              maxLength: 100,
+              description: '설문 제목'
+            },
+            description: {
+              type: 'string',
+              maxLength: 500,
+              description: '설문 설명'
+            },
+            category: {
+              type: 'string',
+              enum: ['exercise', 'nutrition', 'mental_health', 'lifestyle'],
+              description: '설문 카테고리'
+            },
+            version: {
+              type: 'string',
+              description: '버전'
+            },
+            isActive: {
+              type: 'boolean',
+              description: '활성 상태'
+            },
+            createdAt: {
+              type: 'string',
+              format: 'date-time',
+              description: '생성일'
+            },
+            updatedAt: {
+              type: 'string',
+              format: 'date-time',
+              description: '수정일'
+            }
+          }
+        },
+        Question: {
+          type: 'object',
+          required: ['surveyId', 'questionNumber', 'questionText', 'options'],
+          properties: {
+            _id: {
+              type: 'string',
+              description: '문항 ID'
+            },
+            surveyId: {
+              type: 'string',
+              description: '설문 ID'
+            },
+            questionNumber: {
+              type: 'number',
+              minimum: 1,
+              description: '문항 번호'
+            },
+            questionText: {
+              type: 'string',
+              maxLength: 500,
+              description: '문항 내용'
+            },
+            options: {
+              type: 'array',
+              items: {
+                type: 'object',
+                properties: {
+                  text: {
+                    type: 'string',
+                    description: '선택지 텍스트'
+                  },
+                  score: {
+                    type: 'number',
+                    minimum: 0,
+                    description: '점수'
+                  }
+                }
+              },
+              description: '선택지 목록'
+            },
+            createdAt: {
+              type: 'string',
+              format: 'date-time',
+              description: '생성일'
+            },
+            updatedAt: {
+              type: 'string',
+              format: 'date-time',
+              description: '수정일'
+            }
+          }
+        },
+        SurveyResponse: {
+          type: 'object',
+          required: ['userId', 'surveyId', 'answers', 'totalScore'],
+          properties: {
+            _id: {
+              type: 'string',
+              description: '응답 ID'
+            },
+            userId: {
+              type: 'string',
+              description: '사용자 ID'
+            },
+            surveyId: {
+              type: 'string',
+              description: '설문 ID'
+            },
+            answers: {
+              type: 'array',
+              items: {
+                type: 'object',
+                properties: {
+                  questionId: {
+                    type: 'string',
+                    description: '문항 ID'
+                  },
+                  selectedOptionIndex: {
+                    type: 'number',
+                    minimum: 0,
+                    description: '선택한 옵션 인덱스'
+                  },
+                  score: {
+                    type: 'number',
+                    minimum: 0,
+                    description: '점수'
+                  }
+                }
+              },
+              description: '답변 목록'
+            },
+            totalScore: {
+              type: 'number',
+              minimum: 0,
+              description: '총점'
+            },
+            resultId: {
+              type: 'string',
+              description: '결과 ID'
+            },
+            completedAt: {
+              type: 'string',
+              format: 'date-time',
+              description: '완료일'
+            },
+            createdAt: {
+              type: 'string',
+              format: 'date-time',
+              description: '생성일'
+            },
+            updatedAt: {
+              type: 'string',
+              format: 'date-time',
+              description: '수정일'
+            }
+          }
+        },
+        SurveyResult: {
+          type: 'object',
+          required: ['surveyId', 'minScore', 'maxScore', 'level', 'levelText', 'summary', 'consulting'],
+          properties: {
+            _id: {
+              type: 'string',
+              description: '결과 ID'
+            },
+            surveyId: {
+              type: 'string',
+              description: '설문 ID'
+            },
+            minScore: {
+              type: 'number',
+              minimum: 0,
+              description: '최소 점수'
+            },
+            maxScore: {
+              type: 'number',
+              minimum: 0,
+              description: '최대 점수'
+            },
+            level: {
+              type: 'string',
+              enum: ['excellent', 'good', 'caution', 'warning', 'critical'],
+              description: '결과 레벨'
+            },
+            levelText: {
+              type: 'string',
+              maxLength: 50,
+              description: '레벨 텍스트'
+            },
+            summary: {
+              type: 'string',
+              maxLength: 1000,
+              description: '요약문'
+            },
+            consulting: {
+              type: 'array',
+              items: {
+                type: 'string',
+                maxLength: 500
+              },
+              description: '생활 컨설팅 목록'
+            },
+            createdAt: {
+              type: 'string',
+              format: 'date-time',
+              description: '생성일'
+            },
+            updatedAt: {
+              type: 'string',
+              format: 'date-time',
+              description: '수정일'
+            }
+          }
+        },
         ApiResponse: {
           type: 'object',
           properties: {
