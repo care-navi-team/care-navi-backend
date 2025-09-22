@@ -37,21 +37,21 @@ export const getUserById = async (req: Request, res: Response, next: NextFunctio
 
 export const createUser = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { name, email, password, phoneNumber, address, userType } = req.body;
+    const { name, password, phoneNumber, birthDate, userType } = req.body;
 
-    const existingUser = await User.findOne({ email });
+    const existingUser = await User.findOne({ phoneNumber });
+
     if (existingUser) {
-      const error = new Error('이미 존재하는 이메일입니다') as AppError;
+      const error = new Error('이미 존재하는 전화번호입니다') as AppError;
       error.statusCode = 400;
       return next(error);
     }
 
     const user = await User.create({
       name,
-      email,
       password,
       phoneNumber,
-      address,
+      birthDate,
       userType
     });
 

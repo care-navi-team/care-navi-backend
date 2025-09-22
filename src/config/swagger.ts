@@ -25,7 +25,7 @@ const options = {
       schemas: {
         User: {
           type: 'object',
-          required: ['name', 'email', 'password', 'userType'],
+          required: ['name', 'password', 'phoneNumber', 'birthDate', 'userType'],
           properties: {
             _id: {
               type: 'string',
@@ -36,11 +36,6 @@ const options = {
               description: '사용자 이름',
               maxLength: 50
             },
-            email: {
-              type: 'string',
-              format: 'email',
-              description: '이메일 주소'
-            },
             password: {
               type: 'string',
               minLength: 6,
@@ -48,12 +43,12 @@ const options = {
             },
             phoneNumber: {
               type: 'string',
-              description: '전화번호'
+              description: '전화번호 (필수, 유니크)'
             },
-            address: {
+            birthDate: {
               type: 'string',
-              maxLength: 200,
-              description: '주소'
+              format: 'date',
+              description: '생년월일 (YYYY-MM-DD)'
             },
             userType: {
               type: 'string',

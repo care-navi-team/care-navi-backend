@@ -40,17 +40,14 @@ const router = express.Router();
  *             type: object
  *             required:
  *               - name
- *               - email
  *               - password
+ *               - phoneNumber
+ *               - birthDate
  *               - userType
  *             properties:
  *               name:
  *                 type: string
  *                 example: "홍길동"
- *               email:
- *                 type: string
- *                 format: email
- *                 example: "hong@example.com"
  *               password:
  *                 type: string
  *                 minLength: 6
@@ -58,9 +55,10 @@ const router = express.Router();
  *               phoneNumber:
  *                 type: string
  *                 example: "010-1234-5678"
- *               address:
+ *               birthDate:
  *                 type: string
- *                 example: "서울시 강남구"
+ *                 format: date
+ *                 example: "1990-01-15"
  *               userType:
  *                 type: string
  *                 enum: [patient, caregiver, admin]
@@ -78,7 +76,7 @@ const router = express.Router();
  *                     data:
  *                       $ref: '#/components/schemas/User'
  *       400:
- *         description: 잘못된 요청 또는 이미 존재하는 이메일
+ *         description: 잘못된 요청 또는 이미 존재하는 전화번호
  *         content:
  *           application/json:
  *             schema:
@@ -138,13 +136,11 @@ router.route('/')
  *             properties:
  *               name:
  *                 type: string
- *               email:
- *                 type: string
- *                 format: email
  *               phoneNumber:
  *                 type: string
- *               address:
+ *               birthDate:
  *                 type: string
+ *                 format: date
  *               userType:
  *                 type: string
  *                 enum: [patient, caregiver, admin]
