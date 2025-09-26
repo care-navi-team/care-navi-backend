@@ -1,2 +1,3 @@
 # Force redeploy Fri Sep 26 11:28:00 KST 2025
 # Redeploy after MongoDB IP whitelist fix Fri Sep 26 11:40:48 KST 2025
+# Redeploy after port 8000 configuration Thu Sep 26 11:50:00 KST 2025
