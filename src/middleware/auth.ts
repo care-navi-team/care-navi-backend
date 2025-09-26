@@ -13,6 +13,7 @@ interface JwtPayload {
   userId: string;
   phoneNumber: string;
   userType: string;
+  kakaoId?: string;
   iat: number;
   exp: number;
 }

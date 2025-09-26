@@ -48,7 +48,15 @@ export const login = async (req: Request, res: Response): Promise<void> => {
       return;
     }
 
-    // 비밀번호 검증
+    // 비밀번호 검증 (카카오 로그인 사용자는 비밀번호가 없음)
+    if (!user.password) {
+      res.status(401).json({
+        success: false,
+        message: '전화번호 또는 비밀번호가 올바르지 않습니다'
+      });
+      return;
+    }
+
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid) {
       res.status(401).json({
@@ -62,7 +70,7 @@ export const login = async (req: Request, res: Response): Promise<void> => {
     const token = jwt.sign(
       {
         userId: user.id,
-        phoneNumber: user.phoneNumber,
+        phoneNumber: user.phoneNumber || '',
         userType: user.userType
       },
       JWT_SECRET as string,
@@ -145,7 +153,7 @@ export const register = async (req: Request, res: Response): Promise<void> => {
     const token = jwt.sign(
       {
         userId: user.id,
-        phoneNumber: user.phoneNumber,
+        phoneNumber: user.phoneNumber || '',
         userType: user.userType
       },
       JWT_SECRET as string,
@@ -239,7 +247,7 @@ export const refreshToken = async (req: AuthRequest, res: Response): Promise<voi
     const token = jwt.sign(
       {
         userId: user.id,
-        phoneNumber: user.phoneNumber,
+        phoneNumber: user.phoneNumber || '',
         userType: user.userType
       },
       JWT_SECRET as string,
