@@ -9,7 +9,7 @@
     "start": "node dist/app.js",
     "dev": "nodemon src/app.ts",
     "build": "tsc",
-    "railway:build": "npm run build",
+    "railway:build": "npm run build && npx prisma generate && npx prisma db push",
     "railway:start": "npm start",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
