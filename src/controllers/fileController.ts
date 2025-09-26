@@ -16,8 +16,17 @@ interface AuthenticatedRequest extends Request {
  */
 export const uploadFile = async (req: AuthenticatedRequest, res: Response) => {
   try {
+    console.log('파일 업로드 시도:', {
+      hasFile: !!req.file,
+      hasUser: !!req.user,
+      userId: req.user?.id,
+      headers: req.headers,
+      body: req.body
+    });
+
     // 파일이 업로드되지 않은 경우
     if (!req.file) {
+      console.error('파일이 없습니다:', req.file);
       return res.status(400).json({
         success: false,
         message: '파일을 선택해주세요.'
@@ -26,6 +35,7 @@ export const uploadFile = async (req: AuthenticatedRequest, res: Response) => {
 
     // 인증되지 않은 사용자
     if (!req.user) {
+      console.error('인증되지 않은 사용자:', req.user);
       return res.status(401).json({
         success: false,
         message: '인증이 필요합니다.'

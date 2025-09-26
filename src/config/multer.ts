@@ -24,9 +24,16 @@ const storage = multer.diskStorage({
 
 // 파일 필터 (PDF만 허용)
 const fileFilter = (req: any, file: Express.Multer.File, cb: multer.FileFilterCallback) => {
+  console.log('파일 필터 체크:', {
+    originalname: file.originalname,
+    mimetype: file.mimetype,
+    fieldname: file.fieldname
+  });
+
   if (file.mimetype === 'application/pdf') {
     cb(null, true);
   } else {
+    console.error('잘못된 파일 타입:', file.mimetype);
     cb(new Error('PDF 파일만 업로드 가능합니다.'));
   }
 };
