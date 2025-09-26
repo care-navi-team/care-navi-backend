@@ -22,13 +22,18 @@ enum UserType {
 model User {
   id          String   @id @default(cuid())
   name        String   @db.VarChar(50)
-  password    String
-  phoneNumber String   @unique @db.VarChar(20)
-  birthDate   DateTime
+  password    String?  // 카카오 로그인 사용자는 패스워드가 없을 수 있음
+  phoneNumber String?  @unique @db.VarChar(20) // 카카오 로그인 사용자는 전화번호가 없을 수 있음
+  birthDate   DateTime?
   userType    UserType @default(patient)
   isActive    Boolean  @default(true)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+
+  // 카카오 로그인 관련 필드
+  kakaoId     String?  @unique
+  email       String?  @db.VarChar(100)
+  profileImage String? @db.VarChar(500)
 
   uploadedFiles UploadedFile[]
 

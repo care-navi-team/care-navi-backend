@@ -3,7 +3,10 @@ import {
   login,
   register,
   getMe,
-  refreshToken
+  refreshToken,
+  kakaoLogin,
+  verifyUser,
+  resetPassword
 } from '../controllers/authController';
 import { authenticateToken } from '../middleware/auth';
 
@@ -204,5 +207,148 @@ router.get('/me', authenticateToken, getMe);
  *               $ref: '#/components/schemas/Error'
  */
 router.post('/refresh', authenticateToken, refreshToken);
+
+/**
+ * @swagger
+ * /api/auth/kakao-login:
+ *   post:
+ *     summary: 카카오 로그인
+ *     tags: [Authentication]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - kakaoId
+ *               - name
+ *             properties:
+ *               kakaoId:
+ *                 type: string
+ *                 description: 카카오 사용자 ID
+ *                 example: "1234567890"
+ *               name:
+ *                 type: string
+ *                 description: 사용자 이름
+ *                 example: "홍길동"
+ *               email:
+ *                 type: string
+ *                 description: 이메일 (선택적)
+ *                 example: "user@example.com"
+ *               profileImage:
+ *                 type: string
+ *                 description: 프로필 이미지 URL (선택적)
+ *                 example: "https://example.com/profile.jpg"
+ *     responses:
+ *       200:
+ *         description: 카카오 로그인 성공
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/AuthResponse'
+ *       400:
+ *         description: 잘못된 요청
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ */
+router.post('/kakao-login', kakaoLogin);
+
+/**
+ * @swagger
+ * /api/auth/verify-user:
+ *   post:
+ *     summary: 사용자 정보 검증 (비밀번호 찾기)
+ *     tags: [Authentication]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - name
+ *               - phoneNumber
+ *               - birthDate
+ *             properties:
+ *               name:
+ *                 type: string
+ *                 description: 사용자 이름
+ *                 example: "홍길동"
+ *               phoneNumber:
+ *                 type: string
+ *                 description: 전화번호
+ *                 example: "010-1234-5678"
+ *               birthDate:
+ *                 type: string
+ *                 description: 생년월일 (YYYY-MM-DD)
+ *                 example: "1990-12-15"
+ *     responses:
+ *       200:
+ *         description: 사용자 검증 성공
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ApiResponse'
+ *       404:
+ *         description: 사용자를 찾을 수 없음
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ */
+router.post('/verify-user', verifyUser);
+
+/**
+ * @swagger
+ * /api/auth/reset-password:
+ *   post:
+ *     summary: 비밀번호 재설정
+ *     tags: [Authentication]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - name
+ *               - phoneNumber
+ *               - birthDate
+ *               - newPassword
+ *             properties:
+ *               name:
+ *                 type: string
+ *                 description: 사용자 이름
+ *                 example: "홍길동"
+ *               phoneNumber:
+ *                 type: string
+ *                 description: 전화번호
+ *                 example: "010-1234-5678"
+ *               birthDate:
+ *                 type: string
+ *                 description: 생년월일 (YYYY-MM-DD)
+ *                 example: "1990-12-15"
+ *               newPassword:
+ *                 type: string
+ *                 description: 새 비밀번호 (최소 6자)
+ *                 example: "newpassword123"
+ *     responses:
+ *       200:
+ *         description: 비밀번호 재설정 성공
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ApiResponse'
+ *       404:
+ *         description: 사용자를 찾을 수 없음
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ */
+router.post('/reset-password', resetPassword);
 
 export default router;
