@@ -30,5 +30,22 @@ model User {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
+  uploadedFiles UploadedFile[]
+
   @@map("users")
+}
+
+model UploadedFile {
+  id          String   @id @default(cuid())
+  userId      String
+  fileName    String   @db.VarChar(255)
+  originalName String  @db.VarChar(255)
+  filePath    String   @db.VarChar(500)
+  fileSize    Int
+  mimeType    String   @db.VarChar(100)
+  uploadDate  DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("uploaded_files")
 }
