@@ -2,7 +2,6 @@ import express from 'express';
 import {
   getAllUsers,
   getUserById,
-  createUser,
   updateUser,
   deleteUser
 } from '../controllers/userController';
@@ -83,8 +82,7 @@ const router = express.Router();
  *               $ref: '#/components/schemas/Error'
  */
 router.route('/')
-  .get(getAllUsers)
-  .post(createUser);
+  .get(getAllUsers);
 
 /**
  * @swagger

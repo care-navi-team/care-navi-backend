@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
-import User, { IUser } from '../models/User';
+import { prisma } from '../config/database';
+import { IUser } from '../models/User';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
 
@@ -41,7 +42,9 @@ export const authenticateToken = async (
     const decoded = jwt.verify(token, JWT_SECRET) as JwtPayload;
 
     // 사용자 정보 조회
-    const user = await User.findById(decoded.userId);
+    const user = await prisma.user.findUnique({
+      where: { id: decoded.userId }
+    });
     if (!user || !user.isActive) {
       res.status(401).json({
         success: false,
@@ -172,7 +175,9 @@ export const optionalAuth = async (
 
     // 토큰이 있으면 검증
     const decoded = jwt.verify(token, JWT_SECRET) as JwtPayload;
-    const user = await User.findById(decoded.userId);
+    const user = await prisma.user.findUnique({
+      where: { id: decoded.userId }
+    });
 
     if (user && user.isActive) {
       req.user = user;

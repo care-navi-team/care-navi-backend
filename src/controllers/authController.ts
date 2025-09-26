@@ -1,7 +1,8 @@
 import { Request, Response } from 'express';
 import bcrypt from 'bcrypt';
 import jwt, { SignOptions } from 'jsonwebtoken';
-import User, { IUser } from '../models/User';
+import { prisma } from '../config/database';
+import { IUser, CreateUserInput } from '../models/User';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
 const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || '24h';
@@ -33,7 +34,12 @@ export const login = async (req: Request, res: Response): Promise<void> => {
     }
 
     // 사용자 찾기
-    const user = await User.findOne({ phoneNumber, isActive: true }).select('+password');
+    const user = await prisma.user.findUnique({
+      where: {
+        phoneNumber,
+        isActive: true
+      }
+    });
     if (!user) {
       res.status(401).json({
         success: false,
@@ -55,7 +61,7 @@ export const login = async (req: Request, res: Response): Promise<void> => {
     // JWT 토큰 생성
     const token = jwt.sign(
       {
-        userId: user._id,
+        userId: user.id,
         phoneNumber: user.phoneNumber,
         userType: user.userType
       },
@@ -65,7 +71,7 @@ export const login = async (req: Request, res: Response): Promise<void> => {
 
     // 비밀번호 제외하고 사용자 정보 반환
     const userResponse = {
-      _id: user._id,
+      id: user.id,
       name: user.name,
       phoneNumber: user.phoneNumber,
       birthDate: user.birthDate,
@@ -109,7 +115,9 @@ export const register = async (req: Request, res: Response): Promise<void> => {
     }
 
     // 이미 존재하는 전화번호 확인
-    const existingUser = await User.findOne({ phoneNumber });
+    const existingUser = await prisma.user.findUnique({
+      where: { phoneNumber }
+    });
     if (existingUser) {
       res.status(400).json({
         success: false,
@@ -123,20 +131,20 @@ export const register = async (req: Request, res: Response): Promise<void> => {
     const hashedPassword = await bcrypt.hash(password, saltRounds);
 
     // 사용자 생성
-    const user = new User({
-      name,
-      password: hashedPassword,
-      phoneNumber,
-      birthDate: new Date(birthDate),
-      userType: userType || 'patient'
+    const user = await prisma.user.create({
+      data: {
+        name,
+        password: hashedPassword,
+        phoneNumber,
+        birthDate: new Date(birthDate),
+        userType: userType || 'patient'
+      }
     });
-
-    await user.save();
 
     // JWT 토큰 생성
     const token = jwt.sign(
       {
-        userId: user._id,
+        userId: user.id,
         phoneNumber: user.phoneNumber,
         userType: user.userType
       },
@@ -146,7 +154,7 @@ export const register = async (req: Request, res: Response): Promise<void> => {
 
     // 비밀번호 제외하고 사용자 정보 반환
     const userResponse = {
-      _id: user._id,
+      id: user.id,
       name: user.name,
       phoneNumber: user.phoneNumber,
       birthDate: user.birthDate,
@@ -188,7 +196,7 @@ export const getMe = async (req: AuthRequest, res: Response): Promise<void> => {
     }
 
     const userResponse = {
-      _id: user._id,
+      id: user.id,
       name: user.name,
       phoneNumber: user.phoneNumber,
       birthDate: user.birthDate,
@@ -230,7 +238,7 @@ export const refreshToken = async (req: AuthRequest, res: Response): Promise<voi
     // 새 토큰 생성
     const token = jwt.sign(
       {
-        userId: user._id,
+        userId: user.id,
         phoneNumber: user.phoneNumber,
         userType: user.userType
       },
