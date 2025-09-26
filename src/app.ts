@@ -51,8 +51,8 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs, {
 app.use(notFound);
 app.use(errorHandler);
 
-app.listen(PORT, () => {
-  console.log(`서버가 http://localhost:${PORT} 에서 실행중입니다`);
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`서버가 http://0.0.0.0:${PORT} 에서 실행중입니다`);
 });
 
 export default app;
