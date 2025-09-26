@@ -13,7 +13,7 @@ dotenv.config();
 connectDB();
 
 const app: Application = express();
-const PORT = process.env.PORT || 3000;
+const PORT = Number(process.env.PORT) || 3000;
 
 app.use(helmet());
 app.use(cors({
