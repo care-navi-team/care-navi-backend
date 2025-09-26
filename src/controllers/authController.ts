@@ -1,10 +1,15 @@
 import { Request, Response } from 'express';
 import bcrypt from 'bcrypt';
-import jwt from 'jsonwebtoken';
+import jwt, { SignOptions } from 'jsonwebtoken';
 import User, { IUser } from '../models/User';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
 const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || '24h';
+
+// JWT_SECRET이 문자열임을 보장
+if (!JWT_SECRET) {
+  throw new Error('JWT_SECRET environment variable is required');
+}
 
 interface AuthRequest extends Request {
   user?: IUser;
@@ -54,8 +59,8 @@ export const login = async (req: Request, res: Response): Promise<void> => {
         phoneNumber: user.phoneNumber,
         userType: user.userType
       },
-      JWT_SECRET,
-      { expiresIn: JWT_EXPIRES_IN }
+      JWT_SECRET as string,
+      { expiresIn: JWT_EXPIRES_IN } as SignOptions
     );
 
     // 비밀번호 제외하고 사용자 정보 반환
@@ -135,8 +140,8 @@ export const register = async (req: Request, res: Response): Promise<void> => {
         phoneNumber: user.phoneNumber,
         userType: user.userType
       },
-      JWT_SECRET,
-      { expiresIn: JWT_EXPIRES_IN }
+      JWT_SECRET as string,
+      { expiresIn: JWT_EXPIRES_IN } as SignOptions
     );
 
     // 비밀번호 제외하고 사용자 정보 반환
@@ -229,8 +234,8 @@ export const refreshToken = async (req: AuthRequest, res: Response): Promise<voi
         phoneNumber: user.phoneNumber,
         userType: user.userType
       },
-      JWT_SECRET,
-      { expiresIn: JWT_EXPIRES_IN }
+      JWT_SECRET as string,
+      { expiresIn: JWT_EXPIRES_IN } as SignOptions
     );
 
     res.status(200).json({
